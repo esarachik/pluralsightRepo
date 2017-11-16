@@ -2,18 +2,13 @@ import { Http } from '@angular/http'
 import { Injectable } from '@angular/core'
 
 @Injectable()
-export class ApiService{
+export class AuthService{
     messages = [];
 
     constructor( private http: Http){}
 
-    getMessages() {
-        this.http.get('http://localhost:3000/posts').subscribe(res => {
-            this.messages = res.json()
-        })
-    }
-
-     sendUserRegistration(registerData) {
+ 
+     registerUser(registerData) {
         this.http.post('http://localhost:3000/register',registerData).subscribe(res => {
           
         })
@@ -21,7 +16,8 @@ export class ApiService{
 
      loginUser(loginData) {
          this.http.post('http://localhost:3000/login',loginData).subscribe(res => {
-             console.log(loginData)          
+             console.log(loginData)     
+             localStorage.setItem('token', res.json().token) 
          })
     }
 

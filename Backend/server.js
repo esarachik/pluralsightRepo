@@ -2,6 +2,7 @@ var express = require('express')
 var cors = require('cors')
 var bodyParser = require('body-parser')
 var express = require('express')
+var jwt = require('jwt-simple')
 var mongoose = require('mongoose')
 var app = express()
 
@@ -32,6 +33,20 @@ app.post('/register', (req, res) => {
             console.log('error saving user')
         res.sendStatus(200)
     })
+})
+
+app.post('/login', async (req, res) => {
+    var userData = req.body
+    var user = await User.findOne({ email: userData.email })
+    if (!user)
+        return res.status(401).send({ message: "Email or Password invalid" })
+    if (userData.pwd != user.pwd)
+        return res.status(401).send({ message: "Email or Password invalid" })
+    var payload = {}
+    var token = jwt.encode(payload, '123')
+
+    console.log(token)
+    res.status(200).send({token})
 })
 mongoose.connect(
     'mongodb://test:test@ds163745.mlab.com:63745/pssocial',
