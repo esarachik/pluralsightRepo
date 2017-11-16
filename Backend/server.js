@@ -10,6 +10,8 @@ console.log("-Iniciando Server-")
 
 var User = require('./models/user.js')
 
+mongoose.Promise = Promise
+
 var posts = [
     { message: "Hello" },
     { message: "Hi" }
@@ -26,6 +28,17 @@ app.get('/users', async (req, res) => {
     try {
         var users = await User.find({}, '-pwd -__v')
         res.send(users)
+    }
+    catch (error) {
+        console.error(error)
+        res.sendStatus(500)
+    }
+
+})
+app.get('/profile/:id', async (req, res) => {
+    try {
+        var user = await User.findById(req.params.id, '-pwd -__v')
+        res.send(user)
     }
     catch (error) {
         console.error(error)
