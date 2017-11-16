@@ -10,35 +10,35 @@ console.log("-Iniciando Server-")
 var User = require('./models/user.js')
 
 var posts = [
-    {message: "Hello"},
-    {message: "Hi"}
+    { message: "Hello" },
+    { message: "Hi" }
 ]
 
 app.use(cors())
 app.use(bodyParser.json())
- 
 
-app.get('/posts', (req, res)=>{
+
+app.get('/posts', (req, res) => {
     res.send(posts)
 })
 
-app.post('/register', (req, res)=>{
+app.post('/register', (req, res) => {
     var userData = req.body
-    
+
     var user = new User(userData)
 
-    user.save((err, result)=>{
-        if(err)    
-            console.log('error saving user')    
+    user.save((err, result) => {
+        if (err)
+            console.log('error saving user')
         res.sendStatus(200)
-        })
+    })
 })
 mongoose.connect(
     'mongodb://test:test@ds163745.mlab.com:63745/pssocial',
-    {useMongoClient: true},
-    (err)=>{
+    { useMongoClient: true },
+    (err) => {
         if (!err)
-            console.log('connected to mongo')
+            console.log('-Connected to mongoDB-')
     })
 app.listen(3000)
 
