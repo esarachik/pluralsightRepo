@@ -1,20 +1,21 @@
-import { Component } from '@angular/core';
+import { Component } from '@angular/core'
 import { ApiService } from './api.service'
+import { ActivatedRoute } from '@angular/router'
 
 @Component({
   selector: 'messages',
-  template: `<button mat-button>Click me!</button>
-             <div *ngFor="let message of apiService.messages">
-                <mat-card>{{message.message}}</mat-card>  
+  template: `<div *ngFor="let message of apiService.messages">
+                <mat-card>{{message.msg}}</mat-card>  
              </div>`
 })
 export class MessagesComponent {
   title = 'my app';  
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, private route: ActivatedRoute) {}
 
   ngOnInit(){
-      this.apiService.getMessages();
+    var userId = this.route.snapshot.params.id
+      this.apiService.getMessages(userId);
   }
 }
 
