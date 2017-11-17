@@ -4,6 +4,7 @@ var bodyParser = require('body-parser')
 var express = require('express')
 var jwt = require('jwt-simple')
 var mongoose = require('mongoose')
+var bcrypt = require('bcrypt-nodejs')
 var app = express()
 
 console.log("-Iniciando Server-")
@@ -45,7 +46,7 @@ app.get('/profile/:id', async (req, res) => {
         res.sendStatus(500)
     }
 
-})
+}) 
 
 app.post('/register', (req, res) => {
     var userData = req.body
@@ -53,24 +54,26 @@ app.post('/register', (req, res) => {
     var user = new User(userData)
 
     user.save((err, result) => {
+        debugger;
         if (err)
-            console.log('error saving user')
+            console.log('error saving user', err)
         res.sendStatus(200)
     })
 })
 
 app.post('/login', async (req, res) => {
-    var userData = req.body
-    var user = await User.findOne({ email: userData.email })
+    var loginData = req.body
+    var user = await User.findOne({ email: loginData.email })
     if (!user)
         return res.status(401).send({ message: "Email or Password invalid" })
-    if (userData.pwd != user.pwd)
-        return res.status(401).send({ message: "Email or Password invalid" })
-    var payload = {}
-    var token = jwt.encode(payload, '123')
-
-    console.log(token)
-    res.status(200).send({ token })
+    
+    bcrypt.compare(loginData.pwd, user.pwd, (err, isMatch) => {
+        if (!isMatch)
+            return res.status(401).send({ message: "Email or Password invalid" })
+        var payload = {}
+        var token = jwt.encode(payload, '123')
+        res.status(200).send({ token })
+    })    
 })
 mongoose.connect(
     'mongodb://test:test@ds163745.mlab.com:63745/pssocial',
