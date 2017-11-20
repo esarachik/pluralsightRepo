@@ -4,6 +4,7 @@ var bodyParser = require('body-parser')
 var express = require('express')
 var mongoose = require('mongoose')
 var auth = require('./auth.js')
+var jwt = require('jwt-simple')
 var app = express()
 
 console.log("-Iniciando Server-")
@@ -16,22 +17,26 @@ mongoose.Promise = Promise
 app.use(cors())
 app.use(bodyParser.json())
 
+
+
 app.get('/posts/:id', async (req, res) => {
     var author = req.params.id
     var posts = await Post.find({ author })
-    res.send(posts)
+    res.send(posts) 
 })
 
-app.post('/post', (req, res) => {
+app.post('/post', auth.checkAuthenticated, (req, res) => {
     var postData = req.body
-    postData.author = '5a0f349cb512db317c46fa02'
+    postData.author = req.userId
+    
     var post = new Post(postData)
     post.save((err, result) => {
         if (err) {
-            console.log('saving post error')
+            console.error('saving post error')
             return res.status(500).send({ message: 'saving post error' })
         }
-        res.sendStatus(200)
+        //res.sendStatus(200) 
+        res.json({status: 200})
     })
 })
 
@@ -65,7 +70,7 @@ mongoose.connect(
             console.log('-Connected to mongoDB-')
     })
 
-app.use('/auth', auth)
+app.use('/auth', auth.router)
 
 app.listen(3000)
 

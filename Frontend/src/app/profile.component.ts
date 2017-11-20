@@ -38,9 +38,8 @@ export class ProfileComponent {
   profile
 
   ngOnInit() {
-    var id = this.route.snapshot.params.id
-    this.apiService.getProfile(id).subscribe(data => this.profile = data.json())
-    debugger;
+    var id = this.route.snapshot.params['id']
+    this.apiService.getProfile(id).subscribe(data => this.profile = data)
   }
 }
 
