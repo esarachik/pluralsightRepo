@@ -5,9 +5,7 @@ ng build --env=prod para generar production
 
 http://pluralsight-social.s3-website.us-east-2.amazonaws.com/
 
-
 https://pluralsight-social.herokuapp.com/
-
 
 https://mlab.com/login/
 
